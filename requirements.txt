@@ -13,5 +13,10 @@ loguru
 
 # 추가 라이브러리
 pytesseract
-pillow == 9.4.0
+# pillow == 9.4.0
 # PyPDF2
+
+pydantic
+pillow
+lxml
+matplotlib
