@@ -13,7 +13,8 @@ loguru
 
 # 추가 라이브러리
 pytesseract
-opencv-python
+opencv-python-headless
+scikit-learn
 # pillow == 9.4.0
 # PyPDF2
 
