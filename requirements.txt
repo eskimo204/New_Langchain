@@ -16,7 +16,7 @@ pytesseract
 # pillow == 9.4.0
 # PyPDF2
 
-pydantic
-pillow
-lxml
-matplotlib
+# pydantic
+# pillow
+# lxml
+# matplotlib
