@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-#import openai
+import openai
 import pytesseract
 import base64
 
