@@ -7,7 +7,7 @@ unstructured[all-docs] == 0.15.0
 sentence-transformers
 faiss-cpu
 tiktoken
-#openai
+openai
 loguru
 #docx2txt
 
