@@ -3,6 +3,7 @@ import os
 import openai
 import pytesseract
 import base64
+import tempfile
 
 # from PyPDF2 import PdfFileReader
 from PIL import Image
