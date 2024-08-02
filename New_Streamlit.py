@@ -4,8 +4,8 @@ import openai
 import pytesseract
 import base64
 
-from PyPDF2 import PdfFileReader
-# from PIL import Image
+# from PyPDF2 import PdfFileReader
+from PIL import Image
 from io import BytesIO
 from unstructured.partition.pdf import partition_pdf
 from langchain.text_splitter import CharacterTextSplitter
