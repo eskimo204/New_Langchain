@@ -31,7 +31,7 @@ def extract_text_and_images_from_pdf(file):
     # PDF에서 텍스트와 이미지를 추출
     elements = partition_pdf(file)
     text = ""
-    images = "" # []
+    images = []
     
     for element in elements:
         if element['type'] == 'Text':
