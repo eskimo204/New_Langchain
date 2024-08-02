@@ -67,10 +67,10 @@ def display_images(images):
 if uploaded_file and api_key:
     # PDF 파일에서 텍스트와 이미지 추출
     with st.spinner("PDF 파일에서 텍스트와 이미지를 추출하는 중..."):
-        # text, images = extract_text_and_images_from_pdf(uploaded_file)
-        # BytesIO 객체를 사용하여 PDF 파일을 읽음
-        file = BytesIO(uploaded_file.read())
-        text, images = extract_text_and_images_from_pdf(file)
+        text, images = extract_text_and_images_from_pdf(uploaded_file)
+        # # BytesIO 객체를 사용하여 PDF 파일을 읽음
+        # file = BytesIO(uploaded_file.read())
+        # text, images = extract_text_and_images_from_pdf(file)
 
     # 텍스트를 청크로 분할
     chunks = text_to_chunks(text)
