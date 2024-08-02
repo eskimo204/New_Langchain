@@ -67,10 +67,17 @@ def display_images(images):
 if uploaded_file and api_key:
     # PDF 파일에서 텍스트와 이미지 추출
     with st.spinner("PDF 파일에서 텍스트와 이미지를 추출하는 중..."):
-        text, images = extract_text_and_images_from_pdf(uploaded_file)
+        # text, images = extract_text_and_images_from_pdf(uploaded_file)
         # # BytesIO 객체를 사용하여 PDF 파일을 읽음
         # file = BytesIO(uploaded_file.read())
         # text, images = extract_text_and_images_from_pdf(file)
+
+        # UploadedFile 객체를 임시 파일로 저장하여 해당 파일 경로를 사용
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+            temp_file.write(uploaded_file.read())  # 업로드된 파일 내용을 임시 파일에 씀
+            temp_file_path = temp_file.name  # 임시 파일의 경로를 얻음
+        
+        text, images = extract_text_and_images_from_pdf(temp_file_path)  # 임시 파일 경로를 사용하여 함수 호출
 
     # 텍스트를 청크로 분할
     chunks = text_to_chunks(text)
