@@ -28,19 +28,22 @@ api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 if api_key:
     openai.api_key = api_key
 
-def extract_text_and_images_from_pdf(file):
+def extract_text_and_images_from_pdf(file_path):
     # PDF에서 텍스트와 이미지를 추출
-    elements = partition_pdf(file)
+    elements = partition_pdf(file_path)
     text = ""
     images = []
     
     for element in elements:
-        if element['type'] == 'Text':
-            text += element['text']
-        elif element['type'] == 'Image':
-            images.append(element['base64'])
+        # 요소 타입을 확인하여 적절히 처리
+        if isinstance(element, dict) and 'type' in element:
+            if element['type'] == 'Text':
+                text += element['text']
+            elif element['type'] == 'Image':
+                images.append(element['base64'])
     
     return text, images
+
 
 def text_to_chunks(text):
     # 텍스트를 청크로 분할
