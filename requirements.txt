@@ -1,8 +1,16 @@
-streamlit
-openai
-Pillow
-unstructured==0.15.0
+# 기존 라이브러리
+pysqlite3-binary
 langchain
 langchain_community
-langchain_openai
-IPython
+chromadb
+unstructured[all-docs] == 0.15.0
+sentence-transformers
+faiss-cpu
+tiktoken
+openai
+loguru
+
+# 추가 라이브러리
+pytesseract
+opencv-python-headless
+scikit-learn
