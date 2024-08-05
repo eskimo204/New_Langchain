@@ -11,7 +11,8 @@ from io import BytesIO
 from unstructured.partition.pdf import partition_pdf
 from langchain.text_splitter import CharacterTextSplitter
 # from langchain.vectorstores import FAISS
-from langchain.embeddings import FAISS
+# from langchain.embeddings import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
