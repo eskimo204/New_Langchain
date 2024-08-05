@@ -71,12 +71,6 @@ def display_images(images):
 if uploaded_file and api_key:
     # PDF 파일에서 텍스트와 이미지 추출
     with st.spinner("PDF 파일에서 텍스트와 이미지를 추출하는 중..."):
-        # text, images = extract_text_and_images_from_pdf(uploaded_file)
-        # # BytesIO 객체를 사용하여 PDF 파일을 읽음
-        # file = BytesIO(uploaded_file.read())
-        # text, images = extract_text_and_images_from_pdf(file)
-
-        # UploadedFile 객체를 임시 파일로 저장하여 해당 파일 경로를 사용
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
             temp_file.write(uploaded_file.read())  # 업로드된 파일 내용을 임시 파일에 씀
             temp_file_path = temp_file.name  # 임시 파일의 경로를 얻음
@@ -86,26 +80,30 @@ if uploaded_file and api_key:
     # 텍스트를 청크로 분할
     chunks = text_to_chunks(text)
     
-    # 텍스트 청크를 벡터 저장소에 저장
-    embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-    vector_store = FAISS.from_texts(chunks, embeddings)
+    # chunks 리스트가 비어 있지 않은 경우에만 벡터 저장소에 저장
+    if chunks:
+        # 텍스트 청크를 벡터 저장소에 저장
+        embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+        vector_store = FAISS.from_texts(chunks, embeddings)
 
-    # 대화형 체인 설정
-    chain = load_qa_chain(OpenAI(openai_api_key=api_key), chain_type="stuff")
+        # 대화형 체인 설정
+        chain = load_qa_chain(OpenAI(openai_api_key=api_key), chain_type="stuff")
 
-    # 사용자 인터페이스
-    st.title("PDF 파일 챗봇")
-    st.write("PDF 파일에서 추출한 텍스트와 이미지를 바탕으로 질문에 답변합니다.")
+        # 사용자 인터페이스
+        st.title("PDF 파일 챗봇")
+        st.write("PDF 파일에서 추출한 텍스트와 이미지를 바탕으로 질문에 답변합니다.")
 
-    if images:
-        st.write("추출된 이미지:")
-        display_images(images)
-    
-    user_question = st.text_input("질문을 입력하세요:")
-    if user_question:
-        with st.spinner("답변을 생성하는 중..."):
-            docs = vector_store.similarity_search(user_question, k=5)
-            answer = chain.run(input_documents=docs, question=user_question)
-            st.write("답변:", answer)
+        if images:
+            st.write("추출된 이미지:")
+            display_images(images)
+        
+        user_question = st.text_input("질문을 입력하세요:")
+        if user_question:
+            with st.spinner("답변을 생성하는 중..."):
+                docs = vector_store.similarity_search(user_question, k=5)
+                answer = chain.run(input_documents=docs, question=user_question)
+                st.write("답변:", answer)
+    else:
+        st.write("PDF 파일에서 텍스트를 추출하지 못했습니다.")
 else:
     st.write("PDF 파일을 업로드하고 OpenAI API 키를 입력하세요.")
