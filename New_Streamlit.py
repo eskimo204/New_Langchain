@@ -84,7 +84,7 @@ if uploaded_file and api_key:
     chunks = text_to_chunks(text)
     
     # chunks 리스트가 비어 있지 않은 경우에만 벡터 저장소에 저장
-    if chunks:
+    # if chunks:
         # 텍스트 청크를 벡터 저장소에 저장
         embeddings = OpenAIEmbeddings(openai_api_key=api_key)
         vector_store = FAISS.from_texts(chunks, embeddings)
@@ -106,7 +106,7 @@ if uploaded_file and api_key:
                 docs = vector_store.similarity_search(user_question, k=5)
                 answer = chain.run(input_documents=docs, question=user_question)
                 st.write("답변:", answer)
-    else:
-        st.write("PDF 파일에서 텍스트를 추출하지 못했습니다.")
+    # else:
+    #   st.write("PDF 파일에서 텍스트를 추출하지 못했습니다.")
 else:
     st.write("PDF 파일을 업로드하고 OpenAI API 키를 입력하세요.")
