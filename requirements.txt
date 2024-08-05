@@ -1,7 +1,7 @@
 streamlit
 openai
 Pillow
-unstructured
+unstructured==0.15.0
 langchain
 langchain_community
 langchain_openai
