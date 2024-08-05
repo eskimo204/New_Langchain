@@ -1,24 +1,33 @@
 import streamlit as st
 import os
 import openai
+import tiktoken
 import pytesseract
 import base64
 import tempfile
+import uuid
+import io
+import re
 
-# from PyPDF2 import PdfFileReader
 from PIL import Image
 from io import BytesIO
 from unstructured.partition.pdf import partition_pdf
+from unstructured.documents.elements import Table, CompositeElement
 from langchain.text_splitter import CharacterTextSplitter
-# from langchain.vectorstores import FAISS
-# from langchain.embeddings import FAISS
-from langchain_community.vectorstores import FAISS
-# from langchain.embeddings.openai import OpenAIEmbeddings
-# from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings.openai import OpenAIEmbeddings
 from langchain.chains.question_answering import load_qa_chain
 from langchain_community.llms import OpenAI
 from langchain.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage
+from langchain.retrievers.multi_vector import MultiVectorRetriever
+from langchain.storage import InMemoryStore
+from IPython.display import HTML, display
+from langchain_core.runnables import RunnableLambda, RunnablePassthrough
+from PIL import Image
 
 # Streamlit 페이지 설정
 st.set_page_config(page_title="PDF 파일 챗봇", page_icon=":robot:")
@@ -32,82 +41,58 @@ api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 if api_key:
     openai.api_key = api_key
 
-def extract_text_and_images_from_pdf(file_path):
-    # PDF에서 텍스트와 이미지를 추출
-    elements = partition_pdf(file_path)
-    text = ""
-    images = []
-    
-    for element in elements:
-        # 요소 타입을 확인하여 적절히 처리
-        if isinstance(element, dict) and 'type' in element:
-            if element['type'] == 'Text':
-                text += element['text']
-            elif element['type'] == 'Image':
-                images.append(element['base64'])
-    
-    return text, images
+# PDF 파일의 요소들을 추출
+if uploaded_file:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+        temp_file.write(uploaded_file.read())
+        temp_file_path = temp_file.name
 
+    # 추출된 요소들에서 텍스트와 테이블을 분류
+    raw_pdf_elements = extract_pdf_elements(temp_file_path, os.path.basename(temp_file_path))
+    texts, tables = categorize_elements(raw_pdf_elements)
 
-def text_to_chunks(text):
-    # 텍스트를 청크로 분할
-    text_splitter = CharacterTextSplitter(
-        separator="\n",
-        chunk_size=1000,
-        chunk_overlap=200,
-        length_function=len
+    # 추출된 텍스트들을 특정 크기의 토큰으로 분할
+    text_splitter = CharacterTextSplitter.from_tiktoken_encoder(
+        chunk_size=4000, chunk_overlap=0
     )
-    chunks = text_splitter.split_text(text)
-    return chunks
+    joined_texts = " ".join(texts)
+    texts_4k_token = text_splitter.split_text(joined_texts)
 
-def encode_images(images):
-    # 이미지를 base64로 인코딩
-    encoded_images = []
-    for image in images:
-        encoded_images.append(image)
-    return encoded_images
+    # 텍스트, 테이블 요약 가져오기
+    text_summaries, table_summaries = generate_text_summaries(
+        texts_4k_token, tables, summarize_texts=True
+    )
 
-def display_images(images):
-    # 이미지를 Streamlit에 표시
-    for image in images:
-        st.image(image)
+    # 이미지 요약 실행
+    img_base64_list, image_summaries = generate_img_summaries(os.path.dirname(temp_file_path))
 
-if uploaded_file and api_key:
-    # PDF 파일에서 텍스트와 이미지 추출
-    with st.spinner("PDF 파일에서 텍스트와 이미지를 추출하는 중..."):
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
-            temp_file.write(uploaded_file.read())  # 업로드된 파일 내용을 임시 파일에 씀
-            temp_file_path = temp_file.name  # 임시 파일의 경로를 얻음
-        
-        text, images = extract_text_and_images_from_pdf(temp_file_path)  # 임시 파일 경로를 사용하여 함수 호출
+    vectorstore = Chroma(
+        collection_name="sample-rag-multi-modal", embedding_function=OpenAIEmbeddings(api_key=api_key)
+    )
 
-    # 텍스트를 청크로 분할
-    chunks = text_to_chunks(text)
-    
-    # chunks 리스트가 비어 있지 않은 경우에만 벡터 저장소에 저장
-    # if chunks:
-        # 텍스트 청크를 벡터 저장소에 저장
-    embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-    vector_store = FAISS.from_texts(chunks, embeddings)
+    # 검색기 생성
+    retriever_multi_vector_img = create_multi_vector_retriever(
+        vectorstore,
+        text_summaries,
+        texts,
+        table_summaries,
+        tables,
+        image_summaries,
+        img_base64_list,
+    )
 
-        # 대화형 체인 설정
-    chain = load_qa_chain(OpenAI(openai_api_key=api_key), chain_type="stuff")
+    # RAG 체인 생성
+    chain_multimodal_rag = multi_modal_rag_chain(retriever_multi_vector_img)
 
-        # 사용자 인터페이스
+    # 사용자 인터페이스
     st.title("PDF 파일 챗봇")
     st.write("PDF 파일에서 추출한 텍스트와 이미지를 바탕으로 질문에 답변합니다.")
 
-    if images:
-        st.write("추출된 이미지:")
-        display_images(images)
-        
     user_question = st.text_input("질문을 입력하세요:")
     if user_question:
-         with st.spinner("답변을 생성하는 중..."):
-            docs = vector_store.similarity_search(user_question, k=5)
-            answer = chain.run(input_documents=docs, question=user_question)
+        with st.spinner("답변을 생성하는 중..."):
+            docs = retriever_multi_vector_img.vectorstore.similarity_search(user_question, k=5)
+            answer = chain_multimodal_rag.run({"context": docs, "question": user_question})
             st.write("답변:", answer)
-    # else:
-    #   st.write("PDF 파일에서 텍스트를 추출하지 못했습니다.")
 else:
     st.write("PDF 파일을 업로드하고 OpenAI API 키를 입력하세요.")
