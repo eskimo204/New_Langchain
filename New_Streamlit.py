@@ -256,7 +256,7 @@ def multi_modal_rag_chain(retriever):
     """
 
     # 멀티모달 LLM
-    model = ChatOpenAI(temperature=0, model="gpt-4", max_tokens=2048)
+    model = ChatOpenAI(temperature=0, model="gpt-3.5-turbo", max_tokens=2048)
 
     # RAG 파이프라인
     chain = (
