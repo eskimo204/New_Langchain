@@ -12,7 +12,7 @@ langchain_core
 langchain_openai
 langchain_community
 loguru
-Ipython
+IPython
 
 # 최신 버전 필요?
 langchain
