@@ -13,7 +13,7 @@ langchain_openai
 langchain_community
 loguru
 IPython
-poppler-utils
+pdf2image
 
 # 최신 버전 필요?
 langchain
