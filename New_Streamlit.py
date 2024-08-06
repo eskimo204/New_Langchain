@@ -7,7 +7,7 @@ import uuid
 import re
 import io
 import pytesseract
-import sqlite3
+
 
 from PIL import Image
 from io import BytesIO
