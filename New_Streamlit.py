@@ -6,6 +6,7 @@ import tempfile
 import uuid
 import re
 import io
+import Ipython
 
 from PIL import Image
 from io import BytesIO
