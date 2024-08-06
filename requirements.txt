@@ -14,6 +14,7 @@ langchain_community
 loguru
 IPython
 pdf2image
+pysqlite3-binary
 
 # 최신 버전 필요?
 langchain
