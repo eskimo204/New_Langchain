@@ -1,16 +1,19 @@
-# 기존 라이브러리
-pysqlite3-binary
-langchain
-langchain_community
+# 라이브러리
+unstructured[all-docs]
+pillow
+pydantic
+lxml
+pillow
+matplotlib
 chromadb
-unstructured[all-docs] == 0.15.0
-sentence-transformers
-faiss-cpu
 tiktoken
-openai
+pytesseract
+langchain_core
+langchain_openai
+langchain_community
 loguru
 
-# 추가 라이브러리
-pytesseract
-opencv-python-headless
-scikit-learn
+# 최신 버전 필요?
+langchain
+openai
+langchain-experimental
