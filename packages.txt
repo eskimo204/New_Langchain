@@ -2,3 +2,4 @@ freeglut3-dev
 libgtk2.0-dev
 poppler-utils
 tesseract-ocr
+sqlite3
