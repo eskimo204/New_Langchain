@@ -342,7 +342,7 @@ if uploaded_file and api_key:
                 },
                 "question": user_question
             }
-            answer = chain_multimodal_rag.invoke(context)
+            answer = chain_multimodal_rag.invoke("context")
             st.write("답변:", answer)
 
             # 이미지를 포함한 응답이 있을 경우 이미지를 출력
