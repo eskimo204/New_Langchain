@@ -239,9 +239,9 @@ def img_prompt_func(data_dict):
     text_message = {
         "type": "text",
         "text": (
-            "You are financial analyst tasking with providing investment advice.\n"
+            "You are a pdf analyst who analyzes the uploaded PDF.\n"
             "You will be given a mixed of text, tables, and image(s) usually of charts or graphs.\n"
-            "Use this information to provide investment advice related to the user question. Answer in Korean. Do NOT translate company names.\n"
+            "Use this information to provide appropriate answers to your questions. \n"
             f"User-provided question: {data_dict['question']}\n\n"
             "Text and / or tables:\n"
             f"{formatted_texts}"
