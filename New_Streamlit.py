@@ -335,7 +335,7 @@ if uploaded_file and api_key:
     if user_question:
         with st.spinner("답변을 생성하는 중..."):
             docs = retriever_multi_vector_img.vectorstore.similarity_search(user_question, k=5)
-            answer = chain_multimodal_rag.invoke({"context": docs, "question": user_question})
+            answer = chain_multimodal_rag.invoke("question")
 
             # 질문에 이미지 요청이 있는지 확인
             if "이미지" in user_question or "사진" in user_question or "차트" in user_question:
