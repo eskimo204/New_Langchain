@@ -334,7 +334,7 @@ if uploaded_file and api_key:
     user_question = st.text_input("질문을 입력하세요:")
     if user_question:
         with st.spinner("답변을 생성하는 중..."):
-            docs = retriever_multi_vector_img.vectorstore.similarity_search(user_question, limit=5)
+            docs = retriever_multi_vector_img.vectorstore.similarity_search(user_question, k=5)
             answer = chain_multimodal_rag.invoke("question")
             st.write("답변:", answer)
             # 질문에 이미지 요청이 있는지 확인
