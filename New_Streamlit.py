@@ -335,7 +335,7 @@ if uploaded_file and api_key:
     if user_question:
         with st.spinner("답변을 생성하는 중..."):
             docs = retriever_multi_vector_img.vectorstore.similarity_search(user_question, k=5)
-            answer = chain_multimodal_rag.invoke({"context": docs, "question": user_question})
+            answer = chain_multimodal_rag.run({"context": docs, "question": user_question})
             st.write("답변:", answer)
 else:
     st.write("PDF 파일을 업로드하고 OpenAI API 키를 입력하세요.")
