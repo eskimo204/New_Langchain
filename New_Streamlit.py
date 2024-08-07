@@ -335,7 +335,15 @@ if uploaded_file and api_key:
     if user_question:
         with st.spinner("답변을 생성하는 중..."):
             docs = retriever_multi_vector_img.vectorstore.similarity_search(user_question, k=5)
-            answer = chain_multimodal_rag.invoke("question")
+            answer = chain_multimodal_rag.invoke({"context": docs, "question": user_question})
+
+            # 질문에 이미지 요청이 있는지 확인
+            if "이미지" in user_question or "사진" in user_question or "차트" in user_question:
+                for doc in docs:
+                    if is_image_data(doc.page_content):
+                        plt_img_base64(doc.page_content)
+                        break
+
             st.write("답변:", answer)
 else:
     st.write("PDF 파일을 업로드하고 OpenAI API 키를 입력하세요.")
