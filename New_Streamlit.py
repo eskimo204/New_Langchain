@@ -70,6 +70,15 @@ def move_images_to_target_dir(source_dir, target_dir):
         full_file_name = os.path.join(source_dir, img_file)
         if os.path.isfile(full_file_name):
             shutil.move(full_file_name, target_dir)
+            
+def list_directory_contents(directory):
+    """
+    주어진 디렉토리의 모든 파일과 폴더 목록을 반환합니다.
+    """
+    try:
+        return os.listdir(directory)
+    except FileNotFoundError:
+        return f"{directory} 경로가 존재하지 않습니다."
 
 def categorize_elements(raw_pdf_elements):
     """
