@@ -51,7 +51,7 @@ def extract_pdf_elements(path, fname):
     path: 이미지(.jpg)를 저장할 파일 경로
     fname: 파일 이름
     """
-    return partition_pdf(
+    elements partition_pdf(
         filename=os.path.join(path, fname),
         extract_images_in_pdf=True,  # PDF 내 이미지 추출 활성화
         infer_table_structure=True,  # 테이블 구조 추론 활성화
@@ -61,6 +61,25 @@ def extract_pdf_elements(path, fname):
         combine_text_under_n_chars=2000,  # 이 문자 수 이하의 텍스트는 결합
         image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
     )
+    return elements, path
+
+# 이미지 경로를 새로 이동
+def move_images_to_target_dir(source_dir, target_dir):
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+    for img_file in os.listdir(source_dir):
+        full_file_name = os.path.join(source_dir, img_file)
+        if os.path.isfile(full_file_name):
+            shutil.move(full_file_name, target_dir)
+
+def list_directory_contents(directory):
+    """
+    주어진 디렉토리의 모든 파일과 폴더 목록을 반환합니다.
+    """
+    try:
+        return os.listdir(directory)
+    except FileNotFoundError:
+        return f"{directory} 경로가 존재하지 않습니다."
 
 def categorize_elements(raw_pdf_elements):
     """
@@ -280,7 +299,14 @@ if uploaded_file and api_key:
             fname = os.path.basename(temp_file_path)  # 업로드된 파일 이름 저장
 
     # PDF 파일의 요소들을 추출
-    raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
+    raw_pdf_elements, image_output_dir = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
+
+    #이미지가 저장된 경로를 출력
+    st.write(f"이미지가 저장된 경로: {image_output_dir}")
+
+    # 이미지 디렉토리 이동 작업
+    move_images_to_target_dir(image_output_dir, fpath)
+    
     texts, tables = categorize_elements(raw_pdf_elements)
 
     # 추출된 텍스트들을 특정 크기의 토큰으로 분할
