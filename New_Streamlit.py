@@ -51,7 +51,7 @@ def extract_pdf_elements(path, fname):
     path: 이미지(.jpg)를 저장할 파일 경로
     fname: 파일 이름
     """
-    return partition_pdf(
+    elements =  partition_pdf(
         filename=os.path.join(path, fname),
         extract_images_in_pdf=True,  # PDF 내 이미지 추출 활성화
         infer_table_structure=True,  # 테이블 구조 추론 활성화
@@ -61,6 +61,7 @@ def extract_pdf_elements(path, fname):
         combine_text_under_n_chars=2000,  # 이 문자 수 이하의 텍스트는 결합
         image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
     )
+    return elements, path
 
 # 이미지 경로를 새로 이동
 def move_images_to_target_dir(source_dir, target_dir):
