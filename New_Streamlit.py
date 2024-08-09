@@ -67,30 +67,10 @@ def move_images_to_target_dir(source_dir, target_dir):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
-    for img_file in os.listdir(source_dir):
+     for img_file in os.listdir(source_dir):
         full_file_name = os.path.join(source_dir, img_file)
         if os.path.isfile(full_file_name):
-            target_file = os.path.join(target_dir, img_file)
-            # 파일이 이미 존재하는 경우, 새로운 이름 생성
-            if os.path.exists(target_file):
-                base, ext = os.path.splitext(img_file)
-                counter = 1
-                new_img_file = f"{base}_{counter}{ext}"
-                target_file = os.path.join(target_dir, new_img_file)
-                while os.path.exists(target_file):
-                    counter += 1
-                    new_img_file = f"{base}_{counter}{ext}"
-                    target_file = os.path.join(target_dir, new_img_file)
-            shutil.move(full_file_name, target_file)
-
-def list_directory_contents(directory):
-    """
-    주어진 디렉토리의 모든 파일과 폴더 목록을 반환합니다.
-    """
-    try:
-        return os.listdir(directory)
-    except FileNotFoundError:
-        return f"{directory} 경로가 존재하지 않습니다."
+            shutil.move(full_file_name, target_dir)
 
 def categorize_elements(raw_pdf_elements):
     """
@@ -311,11 +291,6 @@ if uploaded_file and api_key:
 
     # PDF 파일의 요소들을 추출
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
-
-    extract_pdf_elements(os.path.dirname(temp_file_path), fname)
-
-    # 이미지를 새 디렉토리로 이동
-    move_images_to_target_dir("/tmp", os.path.dirname(temp_file_path))
 
     # 이미지가 저장된 디렉토리의 파일 목록을 확인합니다.
     # image_files = list_directory_contents(image_output_dir)
