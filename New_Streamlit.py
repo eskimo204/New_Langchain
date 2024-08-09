@@ -71,42 +71,6 @@ def move_images_to_target_dir(source_dir, target_dir):
         if os.path.isfile(full_file_name):
             shutil.move(full_file_name, target_dir)
             
-def list_directory_contents(directory):
-    """
-    주어진 디렉토리의 모든 파일과 폴더 목록을 반환합니다.
-    """
-    try:
-        return os.listdir(directory)
-    except FileNotFoundError:
-        return f"{directory} 경로가 존재하지 않습니다."
-
-def find_image_directory(base_dir):
-    """
-    주어진 디렉토리 내에 이미지 파일이 포함된 하위 디렉토리를 찾습니다.
-    base_dir: 검색을 시작할 기본 디렉토리 경로
-    return: 이미지가 포함된 디렉토리 경로
-    """
-    for root, dirs, files in os.walk(base_dir):
-        for file in files:
-            if file.lower().endswith(('.jpg', '.jpeg', '.png')):
-                return root  # 이미지가 포함된 디렉토리를 반환
-    return None  # 이미지가 포함된 디렉토리를 찾지 못한 경우
-
-def copy_images_to_tmp(source_dir, target_dir="/tmp"):
-    """
-    source_dir에 있는 이미지 파일들을 target_dir로 복사합니다.
-    source_dir: 이미지가 저장된 디렉토리 경로
-    target_dir: 이미지를 복사할 대상 디렉토리, 기본값은 '/tmp'
-    """
-    if not os.path.exists(target_dir):
-        os.makedirs(target_dir)  # 타겟 디렉토리가 없으면 생성
-
-    for img_file in os.listdir(source_dir):
-        full_file_name = os.path.join(source_dir, img_file)
-        if os.path.isfile(full_file_name) and img_file.lower().endswith(('.jpg', '.jpeg', '.png')):
-            shutil.copy(full_file_name, target_dir)  # 이미지를 /tmp로 복사
-
-
 def categorize_elements(raw_pdf_elements):
     """
     PDF에서 추출된 요소를 테이블과 텍스트로 분류합니다.
@@ -326,6 +290,7 @@ if uploaded_file and api_key:
 
     # PDF 파일의 요소들을 추출
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
+    move_images_to_target_dir("/tmp", fpath)
 
     # 이미지가 저장된 디렉토리의 파일 목록을 확인합니다.
     # image_files = list_directory_contents(image_output_dir)
@@ -338,14 +303,14 @@ if uploaded_file and api_key:
     texts, tables = categorize_elements(raw_pdf_elements)
 
     # 이미지 저장 경로 확인 및 복사
-    base_directory = "/tmp"  # 또는 "/var/tmp" 등 필요한 기본 경로로 변경 가능
-    source_directory = find_image_directory(base_directory)
+    #base_directory = "/tmp"  # 또는 "/var/tmp" 등 필요한 기본 경로로 변경 가능
+    #source_directory = find_image_directory(base_directory)
 
-    if source_directory:
-        copy_images_to_tmp(source_directory)
-        print(f"Images copied from {source_directory} to /tmp")
-    else:
-        print("No images found in the specified directory.")
+    #if source_directory:
+    #    copy_images_to_tmp(source_directory)
+    #    print(f"Images copied from {source_directory} to /tmp")
+    #else:
+    #    print("No images found in the specified directory.")
 
     # 추출된 텍스트들을 특정 크기의 토큰으로 분할
     text_splitter = CharacterTextSplitter.from_tiktoken_encoder(
