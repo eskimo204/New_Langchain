@@ -281,10 +281,6 @@ if uploaded_file and api_key:
 
     # PDF 파일의 요소들을 추출
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
-
-    # 이미지 추출 후 이동
-    move_images_to_target_dir("/content/figures", os.path.dirname(temp_file_path))
-    
     texts, tables = categorize_elements(raw_pdf_elements)
 
     # 추출된 텍스트들을 특정 크기의 토큰으로 분할
