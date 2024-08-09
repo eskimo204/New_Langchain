@@ -71,6 +71,25 @@ def move_images_to_target_dir(source_dir, target_dir):
         if os.path.isfile(full_file_name):
             shutil.move(full_file_name, target_dir)
             
+def move_images_to_target_dir(source_dir, target_dir):
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+        
+    for img_file in os.listdir(source_dir):
+        full_file_name = os.path.join(source_dir, img_file)
+        
+        # 동일한 파일 이름이 이미 대상 경로에 존재하는지 확인
+        destination_file = os.path.join(target_dir, img_file)
+        if os.path.isfile(full_file_name):
+            if os.path.exists(destination_file):
+                # 파일 이름이 충돌하는 경우, 새로운 이름을 생성
+                base, ext = os.path.splitext(img_file)
+                new_file_name = f"{base}_{uuid.uuid4().hex[:8]}{ext}"
+                destination_file = os.path.join(target_dir, new_file_name)
+            
+            shutil.move(full_file_name, destination_file)
+
+
 def categorize_elements(raw_pdf_elements):
     """
     PDF에서 추출된 요소를 테이블과 텍스트로 분류합니다.
@@ -290,7 +309,11 @@ if uploaded_file and api_key:
 
     # PDF 파일의 요소들을 추출
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
-    move_images_to_target_dir("/tmp", os.path.dirname(temp_file_path))
+    # 추출된 이미지들을 /tmp 디렉토리로 이동
+    source_directory = os.path.dirname(temp_file_path)
+    target_directory = "/tmp"
+    move_images_to_target_dir(source_directory, target_directory)
+    #move_images_to_target_dir("/tmp", os.path.dirname(temp_file_path))
 
     # 이미지가 저장된 디렉토리의 파일 목록을 확인합니다.
     # image_files = list_directory_contents(image_output_dir)
