@@ -66,8 +66,7 @@ def extract_pdf_elements(path, fname):
 def move_images_to_target_dir(source_dir, target_dir):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
-
-     for img_file in os.listdir(source_dir):
+    for img_file in os.listdir(source_dir):
         full_file_name = os.path.join(source_dir, img_file)
         if os.path.isfile(full_file_name):
             shutil.move(full_file_name, target_dir)
