@@ -70,18 +70,7 @@ def move_images_to_target_dir(source_dir, target_dir):
     for img_file in os.listdir(source_dir):
         full_file_name = os.path.join(source_dir, img_file)
         if os.path.isfile(full_file_name):
-            target_file = os.path.join(target_dir, img_file)
-            # 파일이 이미 존재하는 경우, 새로운 이름 생성
-            if os.path.exists(target_file):
-                base, ext = os.path.splitext(img_file)
-                counter = 1
-                new_img_file = f"{base}_{counter}{ext}"
-                target_file = os.path.join(target_dir, new_img_file)
-                while os.path.exists(target_file):
-                    counter += 1
-                    new_img_file = f"{base}_{counter}{ext}"
-                    target_file = os.path.join(target_dir, new_img_file)
-            shutil.move(full_file_name, target_file)
+            shutil.move(full_file_name, target_dir)
 
 def list_directory_contents(directory):
     """
