@@ -62,15 +62,6 @@ def extract_pdf_elements(path, fname):
         image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
     )
 
-# 이미지 경로를 새로 이동
-def move_images_to_target_dir(source_dir, target_dir):
-    if not os.path.exists(target_dir):
-        os.makedirs(target_dir)
-    for img_file in os.listdir(source_dir):
-        full_file_name = os.path.join(source_dir, img_file)
-        if os.path.isfile(full_file_name):
-            shutil.move(full_file_name, target_dir)
-
 def categorize_elements(raw_pdf_elements):
     """
     PDF에서 추출된 요소를 테이블과 텍스트로 분류합니다.
