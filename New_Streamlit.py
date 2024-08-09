@@ -66,10 +66,22 @@ def extract_pdf_elements(path, fname):
 def move_images_to_target_dir(source_dir, target_dir):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
+
     for img_file in os.listdir(source_dir):
         full_file_name = os.path.join(source_dir, img_file)
         if os.path.isfile(full_file_name):
-            shutil.move(full_file_name, target_dir)
+            target_file = os.path.join(target_dir, img_file)
+            # 파일이 이미 존재하는 경우, 새로운 이름 생성
+            if os.path.exists(target_file):
+                base, ext = os.path.splitext(img_file)
+                counter = 1
+                new_img_file = f"{base}_{counter}{ext}"
+                target_file = os.path.join(target_dir, new_img_file)
+                while os.path.exists(target_file):
+                    counter += 1
+                    new_img_file = f"{base}_{counter}{ext}"
+                    target_file = os.path.join(target_dir, new_img_file)
+            shutil.move(full_file_name, target_file)
 
 def list_directory_contents(directory):
     """
@@ -311,7 +323,8 @@ if uploaded_file and api_key:
 
     #이미지가 저장된 경로를 출력
     # st.write(f"이미지가 저장된 경로: {image_output_dir}")
-
+    print("Image Output Directory:", image_output_dir)
+    print("Temporary File Path Directory:", os.path.dirname(temp_file_path))
 
 
    
