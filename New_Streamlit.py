@@ -11,7 +11,7 @@ import uuid
 import re
 import io
 import pytesseract
-
+import shutil
 
 from PIL import Image
 from io import BytesIO
@@ -61,6 +61,15 @@ def extract_pdf_elements(path, fname):
         combine_text_under_n_chars=2000,  # 이 문자 수 이하의 텍스트는 결합
         image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
     )
+
+# 이미지 경로를 새로 이동
+def move_images_to_target_dir(source_dir, target_dir):
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+    for img_file in os.listdir(source_dir):
+        full_file_name = os.path.join(source_dir, img_file)
+        if os.path.isfile(full_file_name):
+            shutil.move(full_file_name, target_dir)
 
 def categorize_elements(raw_pdf_elements):
     """
@@ -281,6 +290,10 @@ if uploaded_file and api_key:
 
     # PDF 파일의 요소들을 추출
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
+
+    # 이미지 추출 후 이동
+    move_images_to_target_dir("/content/figures", os.path.dirname(temp_file_path))
+    
     texts, tables = categorize_elements(raw_pdf_elements)
 
     # 추출된 텍스트들을 특정 크기의 토큰으로 분할
