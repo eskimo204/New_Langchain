@@ -292,11 +292,11 @@ if uploaded_file and api_key:
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
 
     # 이미지가 저장된 디렉토리의 파일 목록을 확인합니다.
-    # image_files = list_directory_contents(image_output_dir)
-    # st.write(f"디렉토리 {image_output_dir}의 파일 목록: {image_files}")
+    image_files = list_directory_contents(image_output_dir)
+    st.write(f"디렉토리 {image_output_dir}의 파일 목록: {image_files}")
 
     #이미지가 저장된 경로를 출력
-    # st.write(f"이미지가 저장된 경로: {image_output_dir}")
+    st.write(f"이미지가 저장된 경로: {image_output_dir}")
     print("Image Output Directory:", image_output_dir)
     print("Temporary File Path Directory:", os.path.dirname(temp_file_path))
 
