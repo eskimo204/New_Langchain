@@ -308,8 +308,8 @@ if uploaded_file and api_key:
     #이미지가 저장된 경로를 출력
     st.write(f"이미지가 저장된 경로: {image_output_dir}")
 
-    # 이미지 디렉토리 이동 작업
-    move_images_to_target_dir(image_output_dir, fpath)
+    # 이미지를 새 디렉토리로 이동
+    move_images_to_target_dir(image_output_dir, os.path.dirname(temp_file_path))
     
     texts, tables = categorize_elements(raw_pdf_elements)
 
