@@ -290,7 +290,7 @@ if uploaded_file and api_key:
 
     # PDF 파일의 요소들을 추출
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
-    move_images_to_target_dir("/tmp", fpath)
+    move_images_to_target_dir("/tmp", os.path.dirname(temp_file_path))
 
     # 이미지가 저장된 디렉토리의 파일 목록을 확인합니다.
     # image_files = list_directory_contents(image_output_dir)
