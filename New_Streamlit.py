@@ -322,7 +322,7 @@ if uploaded_file and api_key:
 
     # 추출된 이미지 경로 확인
     image_files = os.listdir(image_output_dir)
-    st.write(f"추출된 이미지 경로: {image_output_dir}")
+    st.write(f"image_out_dir: {image_output_dir}")
     st.write("Extracted images:", image_files)
 
     # 추출된 이미지들을 /tmp 디렉토리로 이동
