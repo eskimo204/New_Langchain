@@ -51,6 +51,11 @@ def extract_pdf_elements(path, fname):
     path: 이미지(.jpg)를 저장할 파일 경로
     fname: 파일 이름
     """
+
+    # 이미지 출력 경로 설정
+    image_output_dir = os.path.join(path, "extracted_images")
+    os.makedirs(image_output_dir, exist_ok=True)  # 디렉토리가 없으면 생성]
+    
     partition_pdf(
         filename=os.path.join(path, fname),
         extract_images_in_pdf=True,  # PDF 내 이미지 추출 활성화
@@ -59,8 +64,10 @@ def extract_pdf_elements(path, fname):
         max_characters=4000,  # 최대 문자 수
         new_after_n_chars=3800,  # 이 문자 수 이후에 새로운 조각 생성
         combine_text_under_n_chars=2000,  # 이 문자 수 이하의 텍스트는 결합
-        image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
+        image_output_dir_path=image_output_dir,  # 이미지 출력 디렉토리 경로
     )
+
+    return image_output_dir
 
 # 이미지 경로를 새로 이동
 def move_images_to_target_dir(source_dir, target_dir):
@@ -307,28 +314,18 @@ if uploaded_file and api_key:
             temp_file_path = temp_file.name
             fname = os.path.basename(temp_file_path)  # 업로드된 파일 이름 저장
 
-    # PDF 파일의 요소들을 추출
-    raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
+    # PDF 파일의 요소들을 추출하고 이미지가 저장된 경로를 반환
+    raw_pdf_elements, image_output_dir = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
 
-    # 이미지가 저장된 경로 출력
-    print("partition_pdf 함수에서 설정한 이미지 경로", image_output_dir)
     # 추출된 이미지 경로 확인
     image_files = os.listdir(image_output_dir)
-    print("Extracted images:", image_files)
+    st.write(f"추출된 이미지 경로: {image_output_dir}")
+    st.write("Extracted images:", image_files)
+
     # 추출된 이미지들을 /tmp 디렉토리로 이동
-    # source_directory = os.path.dirname(temp_file_path)
-    # target_directory = "/tmp"
-    move_images_to_target_dir(source_directory, target_directory)
-    #move_images_to_target_dir("/tmp", os.path.dirname(temp_file_path))
-
-    # 이미지가 저장된 디렉토리의 파일 목록을 확인합니다.
-    # image_files = list_directory_contents(image_output_dir)
-    # st.write(f"디렉토리 {image_output_dir}의 파일 목록: {image_files}")
-
-    # 이미지가 저장된 경로를 출력
-    # st.write(f"이미지가 저장된 경로: {image_output_dir}")
-    # print("Image Output Directory:", image_output_dir)
-    # print("Temporary File Path Directory:", os.path.dirname(temp_file_path))
+    target_directory = "/tmp"
+    move_images_to_target_dir(image_output_dir, target_directory)
+    
     texts, tables = categorize_elements(raw_pdf_elements)
 
     # 이미지 저장 경로 확인 및 복사
