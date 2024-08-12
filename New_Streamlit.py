@@ -320,10 +320,15 @@ if uploaded_file and api_key:
     # PDF 파일의 요소들을 추출하고 이미지가 저장된 경로를 반환
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
 
-    
+    st.write(f"raw_pdf_elements: {raw_pdf_elements}")
 
     # `image_output_dir`은 `extract_pdf_elements` 함수에서 지정한 이미지 저장 경로입니다.
+    st.wrtie(f"temp_file_path: {temp_file_path}")
+    st.write(f"extracted_images: {extracted_images}")
+    
     image_output_dir = os.path.join(temp_file_path, "extracted_images")
+
+    st.wrtie(f"image_output_dir: {image_output_dir}")
     
     # 추출된 이미지 경로 확인
     if os.path.exists(image_output_dir):
