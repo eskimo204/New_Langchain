@@ -309,9 +309,15 @@ if uploaded_file and api_key:
 
     # PDF 파일의 요소들을 추출
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
+
+    # 이미지가 저장된 경로 출력
+    print("partition_pdf 함수에서 설정한 이미지 경로", path)
+    # 추출된 이미지 경로 확인
+    image_files = os.listdir(image_output_dir)
+    print("Extracted images:", image_files)
     # 추출된 이미지들을 /tmp 디렉토리로 이동
-    source_directory = os.path.dirname(temp_file_path)
-    target_directory = "/tmp"
+    # source_directory = os.path.dirname(temp_file_path)
+    # target_directory = "/tmp"
     move_images_to_target_dir(source_directory, target_directory)
     #move_images_to_target_dir("/tmp", os.path.dirname(temp_file_path))
 
