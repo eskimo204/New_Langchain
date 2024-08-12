@@ -67,8 +67,6 @@ def extract_pdf_elements(path, fname):
         image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
     )
 
-    return image_output_dir
-
 # 이미지 경로를 새로 이동
 def move_images_to_target_dir(source_dir, target_dir):
     if not os.path.exists(target_dir):
@@ -307,6 +305,9 @@ def multi_modal_rag_chain(retriever):
     return chain
 
 if uploaded_file and api_key:
+    #Clean /tmp Directory
+    #os.deleteDir("/tmp") //
+    
     # PDF 파일에서 텍스트와 이미지 추출
     with st.spinner("PDF 파일에서 텍스트와 이미지를 추출하는 중..."):
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
@@ -325,10 +326,10 @@ if uploaded_file and api_key:
     # PDF 파일의 요소들을 추출하고 이미지가 저장된 경로를 반환
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
 
-    extract_path = os.path.dirname(temp_file_path) + "/extracted_images"
-    st.write(f"extract_path: {extract_path}")
-    extract_files = os.listdir(extract_path)
-    st.write(f"tem_files: {extract_files}")
+    #extract_path = os.path.dirname(temp_file_path) + "/extracted_images"
+    #st.write(f"extract_path: {extract_path}")
+    #extract_files = os.listdir(extract_path)
+    #st.write(f"tem_files: {extract_files}")
     
 
     st.write(f"raw_pdf_elements: {raw_pdf_elements}")
@@ -337,9 +338,9 @@ if uploaded_file and api_key:
     st.wrtie(f"temp_file_path: {temp_file_path}")
     st.write(f"extracted_images: {extracted_images}")
     
-    image_output_dir = os.path.join(temp_file_path, "extracted_images")
+    # image_output_dir = os.path.join(temp_file_path, "extracted_images")
 
-    st.wrtie(f"image_output_dir: {image_output_dir}")
+    # st.wrtie(f"image_output_dir: {image_output_dir}")
     
     # 추출된 이미지 경로 확인
     if os.path.exists(image_output_dir):
