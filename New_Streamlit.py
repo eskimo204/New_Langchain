@@ -53,8 +53,8 @@ def extract_pdf_elements(path, fname):
     """
 
     # 이미지 출력 경로 설정
-    image_output_dir = os.path.join(path, "extracted_images")
-    os.makedirs(image_output_dir, exist_ok=True)  # 디렉토리가 없으면 생성]
+    # image_output_dir = os.path.join(path, "extracted_images")
+    # os.makedirs(image_output_dir, exist_ok=True)  # 디렉토리가 없으면 생성]
     
     partition_pdf(
         filename=os.path.join(path, fname),
@@ -64,7 +64,7 @@ def extract_pdf_elements(path, fname):
         max_characters=4000,  # 최대 문자 수
         new_after_n_chars=3800,  # 이 문자 수 이후에 새로운 조각 생성
         combine_text_under_n_chars=2000,  # 이 문자 수 이하의 텍스트는 결합
-        image_output_dir_path=image_output_dir,  # 이미지 출력 디렉토리 경로
+        image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
     )
 
     return image_output_dir
