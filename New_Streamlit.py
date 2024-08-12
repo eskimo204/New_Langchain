@@ -324,7 +324,7 @@ if uploaded_file and api_key:
     image_files = os.listdir(image_output_dir)
     st.write(f"image_out_dir: {image_output_dir}")
     st.write("Extracted images:", image_files)
-
+    st.write("Extracted images:", extracted_images)
     # 추출된 이미지들을 /tmp 디렉토리로 이동
     target_directory = "/tmp"
     move_images_to_target_dir(image_output_dir, target_directory)
