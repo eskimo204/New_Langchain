@@ -314,7 +314,8 @@ if uploaded_file and api_key:
             temp_file_path = temp_file.name
             fname = os.path.basename(temp_file_path)  # 업로드된 파일 이름 저장
 
-    st.write(f"Uploaded PDF filename: {fname}")
+    st.write(f"fname: {fname}")
+    st.write(f"temp_file_path: {temp_file_path}")
     
     # PDF 파일의 요소들을 추출하고 이미지가 저장된 경로를 반환
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
