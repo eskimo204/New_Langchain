@@ -331,11 +331,11 @@ if uploaded_file and api_key:
         # 이미지를 표시하려면
         for img_file in extracted_images:
             img_path = os.path.join(image_output_dir, img_file)
-            if img_file.lower().endswith(('.png', '.jpg', '.jpeg')):
+            if img_file.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
                 image = Image.open(img_path)
                 st.image(image, caption=img_file)
     else:
-        st.write("No images found in 'extracted_images' directory.")
+        st.write("이미지가 존재하지 않습니다.")
     
     
     # 추출된 이미지들을 /tmp 디렉토리로 이동
