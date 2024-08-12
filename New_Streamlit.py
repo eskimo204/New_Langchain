@@ -320,17 +320,22 @@ if uploaded_file and api_key:
     
 
     # `image_output_dir`은 `extract_pdf_elements` 함수에서 지정한 이미지 저장 경로입니다.
-    image_output_dir = os.path.dirname(temp_file_path)
-    image_test_dir = os.path.dirname(image_output_dir)
-   
-
+    image_output_dir = os.path.join(temp_file_path, "extracted_images")
+    
     # 추출된 이미지 경로 확인
-    image_files = os.listdir(image_output_dir)
-    st.write(f"image_output_dir: {image_output_dir}")
-    st.write("Extracted images:", image_files)
-
-    images_lists = os.listdir(image_test_dir)
-    st.write("Extracted images:",images_lists) 
+    if os.path.exists(image_output_dir):
+        extracted_images = os.listdir(image_output_dir)
+        st.write(f"Images in 'extracted_images' directory:")
+        st.write(extracted_images)
+        
+        # 이미지를 표시하려면
+        for img_file in extracted_images:
+            img_path = os.path.join(image_output_dir, img_file)
+            if img_file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                image = Image.open(img_path)
+                st.image(image, caption=img_file)
+    else:
+        st.write("No images found in 'extracted_images' directory.")
     
     
     # 추출된 이미지들을 /tmp 디렉토리로 이동
