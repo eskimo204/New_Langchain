@@ -45,6 +45,24 @@ api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 if api_key:
     openai.api_key = api_key
 
+# tmp 폴더 안의 파일 지우기
+def clear_tmp_directory(directory="/tmp"):
+    """
+    지정된 디렉토리의 모든 파일과 폴더를 삭제하는 함수.
+    기본값으로 /tmp 디렉토리를 사용함.
+    """
+    if os.path.exists(directory):
+        for filename in os.listdir(directory):
+            file_path = os.path.join(directory, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.remove(file_path)  # 파일 또는 심볼릭 링크 삭제
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)  # 디렉토리와 그 안의 모든 내용 삭제
+            except Exception as e:
+                print(f'Failed to delete {file_path}. Reason: {e}')
+                
+
 def extract_pdf_elements(path, fname):
     """
     PDF 파일에서 이미지, 테이블, 그리고 텍스트 조각을 추출합니다.
@@ -307,6 +325,8 @@ def multi_modal_rag_chain(retriever):
 if uploaded_file and api_key:
     #Clean /tmp Directory
     #os.deleteDir("/tmp") //
+    # 애플리케이션 시작 시 /tmp 디렉토리 정리
+    clear_tmp_directory()
     
     # PDF 파일에서 텍스트와 이미지 추출
     with st.spinner("PDF 파일에서 텍스트와 이미지를 추출하는 중..."):
@@ -321,7 +341,7 @@ if uploaded_file and api_key:
 
     tmp_files = os.listdir(os.path.dirname(temp_file_path))
     st.write(f"tem_files: {tmp_files}")
-   
+    
     
     # PDF 파일의 요소들을 추출하고 이미지가 저장된 경로를 반환
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
