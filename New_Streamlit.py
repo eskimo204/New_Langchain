@@ -13,7 +13,7 @@ import io
 import pytesseract
 import shutil
 import nltk
-nltk.download() 
+nltk.download('punkt')
 
 from PIL import Image
 from io import BytesIO
