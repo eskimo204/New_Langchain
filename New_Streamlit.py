@@ -363,6 +363,7 @@ if uploaded_file and api_key:
     # st.wrtie(f"image_output_dir: {image_output_dir}")
     
     # 추출된 이미지 경로 확인
+    """
     if os.path.exists(image_output_dir):
         extracted_images = os.listdir(image_output_dir)
         st.write(f"Images in 'extracted_images' directory:")
@@ -376,6 +377,7 @@ if uploaded_file and api_key:
                 st.image(image, caption=img_file)
     else:
         st.write("이미지가 존재하지 않습니다.")
+    """
     
     
     # 추출된 이미지들을 /tmp 디렉토리로 이동
