@@ -262,7 +262,7 @@ def img_prompt_func(data_dict):
             "Text, table and image are mixed.\n"
             "Use this information to provide appropriate answers to your questions. Answer in Korean.\n"
             f"User-provided question: {data_dict['question']}\n\n"
-            "Text and / or image(s) and / or tables:\n"
+            "Text and / or tables:\n"
             f"{formatted_texts}"
         ),
     }
