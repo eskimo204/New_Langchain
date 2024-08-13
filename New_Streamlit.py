@@ -11,7 +11,7 @@ import uuid
 import re
 import io
 import pytesseract
-
+import shutil
 
 from PIL import Image
 from io import BytesIO
@@ -61,6 +61,15 @@ def extract_pdf_elements(path, fname):
         combine_text_under_n_chars=2000,  # 이 문자 수 이하의 텍스트는 결합
         image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
     )
+
+# 이미지 경로를 새로 이동
+def move_images_to_target_dir(source_dir, target_dir):
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+    for img_file in os.listdir(source_dir):
+        full_file_name = os.path.join(source_dir, img_file)
+        if os.path.isfile(full_file_name):
+            shutil.move(full_file_name, target_dir)
 
 def categorize_elements(raw_pdf_elements):
     """
@@ -239,9 +248,9 @@ def img_prompt_func(data_dict):
     text_message = {
         "type": "text",
         "text": (
-            "You are financial analyst tasking with providing investment advice.\n"
+            "You are a pdf analyst who analyzes the uploaded PDF.\n"
             "You will be given a mixed of text, tables, and image(s) usually of charts or graphs.\n"
-            "Use this information to provide investment advice related to the user question. Answer in Korean. Do NOT translate company names.\n"
+            "Use this information to provide appropriate answers to your questions. Answer in Korean.\n"
             f"User-provided question: {data_dict['question']}\n\n"
             "Text and / or tables:\n"
             f"{formatted_texts}"
@@ -256,7 +265,7 @@ def multi_modal_rag_chain(retriever):
     """
 
     # 멀티모달 LLM
-    model = ChatOpenAI(temperature=0, model="gpt-4", max_tokens=2048)
+    model = ChatOpenAI(temperature=0, model="gpt-3.5-turbo", max_tokens=2048)
 
     # RAG 파이프라인
     chain = (
@@ -335,7 +344,13 @@ if uploaded_file and api_key:
     if user_question:
         with st.spinner("답변을 생성하는 중..."):
             docs = retriever_multi_vector_img.vectorstore.similarity_search(user_question, k=5)
-            answer = chain_multimodal_rag.run({"context": docs, "question": user_question})
+            answer = chain_multimodal_rag.invoke("question")
             st.write("답변:", answer)
+            # 질문에 이미지 요청이 있는지 확인
+            if "이미지" in user_question or "사진" in user_question or "차트" in user_question:
+                for doc in docs:
+                    if is_image_data(doc.page_content):
+                        plt_img_base64(doc.page_content)
+                        break
 else:
     st.write("PDF 파일을 업로드하고 OpenAI API 키를 입력하세요.")
