@@ -381,8 +381,8 @@ if uploaded_file and api_key:
     
     
     # 추출된 이미지들을 /tmp 디렉토리로 이동
-    target_directory = "/tmp"
-    move_images_to_target_dir(image_output_dir, target_directory)
+    # target_directory = "/tmp"
+    # move_images_to_target_dir(image_output_dir, target_directory)
     
     texts, tables = categorize_elements(raw_pdf_elements)
 
