@@ -1,6 +1,7 @@
 __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 import streamlit as st
 import os
 import openai
@@ -12,6 +13,9 @@ import io
 import pytesseract
 import shutil
 import chromadb.config
+import nltk
+nltk.download('punkt_tab')
+
 from PIL import Image
 from io import BytesIO
 from unstructured.partition.pdf import partition_pdf
@@ -31,15 +35,18 @@ from langchain.storage import InMemoryStore
 from IPython.display import HTML, display
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from langchain.docstore.document import Document
+
 # Streamlit 페이지 설정
 st.set_page_config(page_title="PDF 파일 챗봇", page_icon=":robot:")
 # 사이드바에서 파일 업로드 및 OpenAI API 키 입력
 st.sidebar.title("PDF 파일 챗봇")
 uploaded_file = st.sidebar.file_uploader("PDF 파일 업로드", type=["pdf"])
 api_key = st.sidebar.text_input("OpenAI API Key", type="password")
+
 # OpenAI API 설정
 if api_key:
     openai.api_key = api_key
+    
 # tmp 폴더 안의 파일 지우기
 def clear_tmp_directory(directory="/tmp"):
     """
@@ -77,6 +84,7 @@ def extract_pdf_elements(path, fname):
         combine_text_under_n_chars=2000,  # 이 문자 수 이하의 텍스트는 결합
         image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
     )
+    
 # 이미지 경로를 새로 이동
 def move_images_to_target_dir(source_dir, target_dir):
     if not os.path.exists(target_dir):
@@ -103,6 +111,7 @@ def move_images_to_target_dir(source_dir, target_dir):
                 destination_file = os.path.join(target_dir, new_file_name)
             
             shutil.move(full_file_name, destination_file)
+            
 def categorize_elements(raw_pdf_elements):
     """
     PDF에서 추출된 요소를 테이블과 텍스트로 분류합니다.
@@ -116,6 +125,7 @@ def categorize_elements(raw_pdf_elements):
         elif "unstructured.documents.elements.CompositeElement" in str(type(element)):
             texts.append(str(element))  # 텍스트 요소 추가
     return texts, tables
+    
 def generate_text_summaries(texts, tables, summarize_texts=False):
     """
     텍스트 요소 요약
@@ -144,10 +154,12 @@ def generate_text_summaries(texts, tables, summarize_texts=False):
     if tables:
         table_summaries = summarize_chain.batch(tables, {"max_concurrency": 5})
     return text_summaries, table_summaries
+    
 def encode_image(image_path):
     # 이미지 파일을 base64 문자열로 인코딩합니다.
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode("utf-8")
+        
 def image_summarize(img_base64, prompt):
     # 이미지 요약을 생성합니다.
     chat = ChatOpenAI(model="gpt-4", max_tokens=2048)
@@ -165,6 +177,7 @@ def image_summarize(img_base64, prompt):
         ]
     )
     return msg.content
+    
 def generate_img_summaries(path):
     """
     이미지에 대한 요약과 base64 인코딩된 문자열을 생성합니다.
@@ -182,6 +195,7 @@ def generate_img_summaries(path):
             img_base64_list.append(base64_image)
             image_summaries.append(image_summarize(base64_image, prompt))
     return img_base64_list, image_summaries
+    
 def create_multi_vector_retriever(
     vectorstore, text_summaries, texts, table_summaries, tables, image_summaries, images
 ):
@@ -193,17 +207,21 @@ def create_multi_vector_retriever(
         id_key=id_key,
     )
     return retriever
+    
 def add_documents(retriever, doc_summaries, doc_contents):
     id_key = "doc_id"
     doc_ids = [str(uuid.uuid4()) for _ in doc_contents]
     summary_docs = [Document(page_content=s, metadata={id_key: doc_ids[i]}) for i, s in enumerate(doc_summaries)]
     retriever.vectorstore.add_documents(summary_docs)
+    
     retriever.docstore.mset(list(zip(doc_ids, doc_contents)))
 def plt_img_base64(img_base64):
     image_html = f'<img src="data:image/jpeg;base64,{img_base64}" />'
     display(HTML(image_html))
+    
 def looks_like_base64(sb):
     return re.match("^[A-Za-z0-9+/]+[=]{0,2}$", sb) is not None
+    
 def is_image_data(b64data):
     image_signatures = {
         b"\xff\xd8\xff": "jpg",
@@ -219,6 +237,7 @@ def is_image_data(b64data):
         return False
     except Exception:
         return False
+        
 def resize_base64_image(base64_string, size=(128, 128)):
     img_data = base64.b64decode(base64_string)
     img = Image.open(io.BytesIO(img_data))
@@ -226,6 +245,7 @@ def resize_base64_image(base64_string, size=(128, 128)):
     buffered = io.BytesIO()
     resized_img.save(buffered, format=img.format)
     return base64.b64encode(buffered.getvalue()).decode("utf-8")
+    
 def split_image_text_types(docs):
     b64_images = []
     texts = []
@@ -238,6 +258,7 @@ def split_image_text_types(docs):
         else:
             texts.append(doc)
     return {"images": b64_images, "texts": texts}
+    
 def img_prompt_func(data_dict):
     """
     컨텍스트를 단일 문자열로 결합
@@ -266,6 +287,7 @@ def img_prompt_func(data_dict):
     }
     messages.append(text_message)
     return [HumanMessage(content=messages)]
+    
 def multi_modal_rag_chain(retriever):
     """
     멀티모달 RAG 체인
@@ -283,6 +305,7 @@ def multi_modal_rag_chain(retriever):
         | StrOutputParser()
     )
     return chain
+    
 if uploaded_file and api_key:
     #Clean /tmp Directory
     #os.deleteDir("/tmp") //
