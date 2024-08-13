@@ -13,8 +13,8 @@ import io
 import pytesseract
 import shutil
 import chromadb.config
-import nltk
-nltk.download('punkt_tab')
+#import nltk
+#nltk.download('punkt_tab')
 
 from PIL import Image
 from io import BytesIO
