@@ -326,7 +326,7 @@ if uploaded_file and api_key:
     #Clean /tmp Directory
     #os.deleteDir("/tmp") //
     # 애플리케이션 시작 시 /tmp 디렉토리 정리
-    clear_tmp_directory()
+    # clear_tmp_directory()
     
     # PDF 파일에서 텍스트와 이미지 추출
     with st.spinner("PDF 파일에서 텍스트와 이미지를 추출하는 중..."):
