@@ -300,24 +300,24 @@ if uploaded_file and api_key:
     # st.wrtie(f"image_output_dir: {image_output_dir}")
     
     # 추출된 이미지 경로 확인
-    if os.path.exists(image_output_dir):
-        extracted_images = os.listdir(image_output_dir)
-        st.write(f"Images in 'extracted_images' directory:")
-        st.write(extracted_images)
-        
-        # 이미지를 표시하려면
-        for img_file in extracted_images:
-            img_path = os.path.join(image_output_dir, img_file)
-            if img_file.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
-                image = Image.open(img_path)
-                st.image(image, caption=img_file)
-    else:
-        st.write("이미지가 존재하지 않습니다.")
+    #if os.path.exists(image_output_dir):
+    #    extracted_images = os.listdir(image_output_dir)
+    #    st.write(f"Images in 'extracted_images' directory:")
+    #    st.write(extracted_images)
+    #    
+    #    # 이미지를 표시하려면
+    #    for img_file in extracted_images:
+    #        img_path = os.path.join(image_output_dir, img_file)
+    #        if img_file.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
+    #            image = Image.open(img_path)
+    #            st.image(image, caption=img_file)
+    #else:
+    #    st.write("이미지가 존재하지 않습니다.")
     
     
     # 추출된 이미지들을 /tmp 디렉토리로 이동
-    target_directory = "/tmp"
-    move_images_to_target_dir(image_output_dir, target_directory)
+    #target_directory = "/tmp"
+    #move_images_to_target_dir(image_output_dir, target_directory)
     
     texts, tables = categorize_elements(raw_pdf_elements)
     # 이미지 저장 경로 확인 및 복사
