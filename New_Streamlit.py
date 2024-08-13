@@ -11,6 +11,7 @@ import re
 import io
 import pytesseract
 import shutil
+import chromadb.config
 from PIL import Image
 from io import BytesIO
 from unstructured.partition.pdf import partition_pdf
@@ -39,6 +40,23 @@ api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 # OpenAI API 설정
 if api_key:
     openai.api_key = api_key
+# tmp 폴더 안의 파일 지우기
+def clear_tmp_directory(directory="/tmp"):
+    """
+    지정된 디렉토리의 모든 파일과 폴더를 삭제하는 함수.
+    기본값으로 /tmp 디렉토리를 사용함.
+    """
+    if os.path.exists(directory):
+        for filename in os.listdir(directory):
+            file_path = os.path.join(directory, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.remove(file_path)  # 파일 또는 심볼릭 링크 삭제
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)  # 디렉토리와 그 안의 모든 내용 삭제
+            except Exception as e:
+                print(f'Failed to delete {file_path}. Reason: {e}')
+                
 def extract_pdf_elements(path, fname):
     """
     PDF 파일에서 이미지, 테이블, 그리고 텍스트 조각을 추출합니다.
@@ -49,7 +67,7 @@ def extract_pdf_elements(path, fname):
     # image_output_dir = os.path.join(path, "extracted_images")
     # os.makedirs(image_output_dir, exist_ok=True)  # 디렉토리가 없으면 생성]
     
-    partition_pdf(
+    return partition_pdf(
         filename=os.path.join(path, fname),
         extract_images_in_pdf=True,  # PDF 내 이미지 추출 활성화
         infer_table_structure=True,  # 테이블 구조 추론 활성화
@@ -268,7 +286,9 @@ def multi_modal_rag_chain(retriever):
 if uploaded_file and api_key:
     #Clean /tmp Directory
     #os.deleteDir("/tmp") //
-    
+    # 애플리케이션 시작 시 /tmp 디렉토리 정리
+    clear_tmp_directory()
+    # clear_tmp_directory()
     # PDF 파일에서 텍스트와 이미지 추출
     with st.spinner("PDF 파일에서 텍스트와 이미지를 추출하는 중..."):
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
@@ -280,7 +300,7 @@ if uploaded_file and api_key:
     st.write(f"os.path.dirname(temp_file_path): {os.path.dirname(temp_file_path)}")
     tmp_files = os.listdir(os.path.dirname(temp_file_path))
     st.write(f"tem_files: {tmp_files}")
-   
+    
     
     # PDF 파일의 요소들을 추출하고 이미지가 저장된 경로를 반환
     raw_pdf_elements = extract_pdf_elements(os.path.dirname(temp_file_path), fname)
@@ -290,16 +310,15 @@ if uploaded_file and api_key:
     #st.write(f"tem_files: {extract_files}")
     
     st.write(f"raw_pdf_elements: {raw_pdf_elements}")
-
     # `image_output_dir`은 `extract_pdf_elements` 함수에서 지정한 이미지 저장 경로입니다.
     #st.wrtie(f"temp_file_path: {temp_file_path}")
     #st.write(f"extracted_images: {extracted_images}")
-
+    
     # image_output_dir = os.path.join(temp_file_path, "extracted_images")
-
     # st.wrtie(f"image_output_dir: {image_output_dir}")
     
     # 추출된 이미지 경로 확인
+    
     #if os.path.exists(image_output_dir):
     #    extracted_images = os.listdir(image_output_dir)
     #    st.write(f"Images in 'extracted_images' directory:")
@@ -316,8 +335,8 @@ if uploaded_file and api_key:
     
     
     # 추출된 이미지들을 /tmp 디렉토리로 이동
-    #target_directory = "/tmp"
-    #move_images_to_target_dir(image_output_dir, target_directory)
+    # target_directory = "/tmp"
+    # move_images_to_target_dir(image_output_dir, target_directory)
     
     texts, tables = categorize_elements(raw_pdf_elements)
     # 이미지 저장 경로 확인 및 복사
