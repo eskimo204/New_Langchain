@@ -259,10 +259,10 @@ def img_prompt_func(data_dict):
         "type": "text",
         "text": (
             "You are a pdf analyst who analyzes the uploaded PDF.\n"
-            "You will be given a mixed of text, tables, and image(s) usually of charts or graphs.\n"
+            "Text, table and image are mixed.\n"
             "Use this information to provide appropriate answers to your questions. Answer in Korean.\n"
             f"User-provided question: {data_dict['question']}\n\n"
-            "Text and / or tables:\n"
+            "Text and / or image(s) and / or tables:\n"
             f"{formatted_texts}"
         ),
     }
