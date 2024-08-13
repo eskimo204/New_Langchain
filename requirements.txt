@@ -5,7 +5,7 @@ pydantic
 lxml
 pillow
 matplotlib
-chromadb
+chromadb==0.4.17
 tiktoken
 pytesseract
 langchain_core
