@@ -12,8 +12,8 @@ import re
 import io
 import pytesseract
 import shutil
-import nltk
-nltk.download()
+#import nltk
+#nltk.download()
 
 from PIL import Image
 from io import BytesIO
