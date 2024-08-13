@@ -11,6 +11,7 @@ import re
 import io
 import pytesseract
 import shutil
+import pysqlite3
 from PIL import Image
 from io import BytesIO
 from unstructured.partition.pdf import partition_pdf
