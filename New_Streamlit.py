@@ -12,9 +12,6 @@ import re
 import io
 import pytesseract
 import shutil
-import chromadb.config
-#import nltk
-#nltk.download('punkt_tab')
 
 from PIL import Image
 from io import BytesIO
@@ -38,6 +35,7 @@ from langchain.docstore.document import Document
 
 # Streamlit 페이지 설정
 st.set_page_config(page_title="PDF 파일 챗봇", page_icon=":robot:")
+
 # 사이드바에서 파일 업로드 및 OpenAI API 키 입력
 st.sidebar.title("PDF 파일 챗봇")
 uploaded_file = st.sidebar.file_uploader("PDF 파일 업로드", type=["pdf"])
@@ -111,7 +109,6 @@ def move_images_to_target_dir(source_dir, target_dir):
                 destination_file = os.path.join(target_dir, new_file_name)
             
             shutil.move(full_file_name, destination_file)
-            
 def categorize_elements(raw_pdf_elements):
     """
     PDF에서 추출된 요소를 테이블과 텍스트로 분류합니다.
@@ -213,8 +210,8 @@ def add_documents(retriever, doc_summaries, doc_contents):
     doc_ids = [str(uuid.uuid4()) for _ in doc_contents]
     summary_docs = [Document(page_content=s, metadata={id_key: doc_ids[i]}) for i, s in enumerate(doc_summaries)]
     retriever.vectorstore.add_documents(summary_docs)
-    
     retriever.docstore.mset(list(zip(doc_ids, doc_contents)))
+    
 def plt_img_base64(img_base64):
     image_html = f'<img src="data:image/jpeg;base64,{img_base64}" />'
     display(HTML(image_html))
@@ -312,6 +309,7 @@ if uploaded_file and api_key:
     # 애플리케이션 시작 시 /tmp 디렉토리 정리
     clear_tmp_directory()
     # clear_tmp_directory()
+
     # PDF 파일에서 텍스트와 이미지 추출
     with st.spinner("PDF 파일에서 텍스트와 이미지를 추출하는 중..."):
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
