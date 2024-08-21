@@ -82,7 +82,8 @@ def extract_pdf_elements(path, fname):
         max_characters=4000,  # 최대 문자 수
         new_after_n_chars=3800,  # 이 문자 수 이후에 새로운 조각 생성
         combine_text_under_n_chars=2000,  # 이 문자 수 이하의 텍스트는 결합
-        image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
+        extract_image_block_to_payload=True,
+        extract_image_block_output_dir=path,  # 이미지 출력 디렉토리 경로
     )
     
 # 이미지 경로를 새로 이동
