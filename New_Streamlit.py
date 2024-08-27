@@ -76,8 +76,9 @@ def extract_pdf_elements(path, fname):
     
     return partition_pdf(
         filename=os.path.join(path, fname),
+        strategy="hi_res",
         extract_images_in_pdf=True,  # PDF 내 이미지 추출 활성화
-        infer_table_structure=True,  # 테이블 구조 추론 활성화
+        extract_image_block_types=["Image", "Table"],
         chunking_strategy="by_title",  # 제목별로 텍스트 조각화
         max_characters=4000,  # 최대 문자 수
         new_after_n_chars=3800,  # 이 문자 수 이후에 새로운 조각 생성
