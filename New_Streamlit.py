@@ -41,7 +41,7 @@ st.set_page_config(page_title="PDF 파일 챗봇", page_icon=":robot:")
 
 # 사이드바에서 파일 업로드 및 OpenAI API 키 입력
 st.sidebar.title("PDF 파일 챗봇")
-uploaded_file = st.sidebar.file_uploader("PDF 또는 이미지 파일 업로드", type=["pdf", "jpg", "jpeg", "png"])
+uploaded_file = st.sidebar.file_uploader("PDF 파일 업로드", type=["pdf"])
 api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 
 # OpenAI API 설정
@@ -308,7 +308,7 @@ def multi_modal_rag_chain(retriever):
     )
     return chain
     
-if uploaded_file:
+if uploaded_file and api_key:
     #Clean /tmp Directory
     #os.deleteDir("/tmp") //
     # 애플리케이션 시작 시 /tmp 디렉토리 정리
