@@ -15,7 +15,7 @@ import shutil
 import nltk
 nltk.download('punkt')
 
-#from PIL import Image
+from PIL import Image
 import PIL.Image as pil
 from io import BytesIO
 from unstructured.partition.pdf import partition_pdf
