@@ -16,7 +16,7 @@ import nltk
 nltk.download('punkt')
 
 from PIL import Image
-import PIL.Image as pil
+#import PIL.Image as pil
 from io import BytesIO
 from unstructured.partition.pdf import partition_pdf
 from unstructured.documents.elements import Table, CompositeElement
@@ -325,7 +325,7 @@ if uploaded_file and api_key:
     st.write(f"temp_file_path: {temp_file_path}")
     st.write(f"os.path.dirname(temp_file_path): {os.path.dirname(temp_file_path)}")
     tmp_files = os.listdir(os.path.dirname(temp_file_path))
-    img = pil.open(temp_file_path)
+    img = Image.open(temp_file_path)
     img
     st.write(f"tem_files: {tmp_files}")
     
