@@ -317,7 +317,7 @@ if uploaded_file and api_key:
 
     # PDF 파일에서 텍스트와 이미지 추출
     with st.spinner("PDF 파일에서 텍스트와 이미지를 추출하는 중..."):
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf",".PNG") as temp_file:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
             temp_file.write(uploaded_file.read())
             temp_file_path = temp_file.name
             fname = os.path.basename(temp_file_path)  # 업로드된 파일 이름 저장
