@@ -325,8 +325,6 @@ if uploaded_file and api_key:
     st.write(f"temp_file_path: {temp_file_path}")
     st.write(f"os.path.dirname(temp_file_path): {os.path.dirname(temp_file_path)}")
     tmp_files = os.listdir(os.path.dirname(temp_file_path))
-    img = Image.open(temp_file_path)
-    img
     st.write(f"tem_files: {tmp_files}")
     
     
@@ -338,6 +336,8 @@ if uploaded_file and api_key:
     #st.write(f"tem_files: {extract_files}")
     
     st.write(f"raw_pdf_elements: {raw_pdf_elements}")
+    img = Image.open(temp_file_path)
+    img
     # `image_output_dir`은 `extract_pdf_elements` 함수에서 지정한 이미지 저장 경로입니다.
     #st.wrtie(f"temp_file_path: {temp_file_path}")
     #st.write(f"extracted_images: {extracted_images}")
