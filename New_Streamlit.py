@@ -12,6 +12,7 @@ import re
 import io
 import pytesseract
 import shutil
+import platform
 import nltk
 nltk.download('punkt')
 
@@ -38,6 +39,24 @@ from langchain.docstore.document import Document
 
 # Streamlit 페이지 설정
 st.set_page_config(page_title="PDF 파일 챗봇", page_icon=":robot:")
+
+# OS 세부 정보 출력
+os_info = platform.system()
+node_name = platform.node()
+os_release = platform.release()
+os_version = platform.version()
+machine = platform.machine()
+processor = platform.processor()
+python_version = platform.python_version()  # Python 버전 추가
+
+st.write("### 현재 시스템 정보")
+st.write(f"**System**: {os_info}")
+st.write(f"**Node Name**: {node_name}")
+st.write(f"**Release**: {os_release}")
+st.write(f"**Version**: {os_version}")
+st.write(f"**Machine**: {machine}")
+st.write(f"**Processor**: {processor}")
+st.write(f"**Python Version**: {python_version}")  # Python 버전 출력
 
 # 사이드바에서 파일 업로드 및 OpenAI API 키 입력
 st.sidebar.title("PDF 파일 챗봇")
