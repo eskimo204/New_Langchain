@@ -338,8 +338,10 @@ if uploaded_file and api_key:
     with st.spinner("PDF 파일에서 텍스트와 이미지를 추출하는 중..."):
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
             temp_file.write(uploaded_file.read())
-            temp_file_path = temp_file.name
-            fname = os.path.basename(temp_file_path)  # 업로드된 파일 이름 저장
+            # temp_file_path = temp_file.name 파일과 경로 이름 헷갈리지 않고 코드 작성하기
+            temp_file_name = os.path.basename(temp_file_path)  # 업로드된 파일 이름 저장
+            temp_file_path = os.path.basepath(temp_file_path) # 위치 추출
+            
     st.write(f"fname: {fname}")
     st.write(f"temp_file_path: {temp_file_path}")
     st.write(f"os.path.dirname(temp_file_path): {os.path.dirname(temp_file_path)}")
